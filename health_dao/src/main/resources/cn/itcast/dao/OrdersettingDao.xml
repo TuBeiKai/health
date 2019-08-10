@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.OrdersettingDao">
+
+    <!--根据日期查询-->
+    <select id="selectCountByOrderDate" parameterType="String" resultType="Integer">
+          SELECT count(*) FROM t_ordersetting WHERE orderDate = #{value}
+    </select>
+
+    <!--根据日期，更新ordersetting表-->
+    <update id="updateOrdersettingByOrderDate" parameterType="map">
+        UPDATE t_ordersetting SET number = #{number} WHERE orderDate = #{orderDate}
+    </update>
+
+    <!--添加excel文件的ordersetting数据-->
+    <insert id="addOrdersetting" parameterType="map">
+        INSERT INTO t_ordersetting (orderDate,number,reservations) VALUES (#{orderDate},#{number},#{reservations})
+    </insert>
+
+    <!--查询一个月的ordersetting数据-->
+    <select id="findOrdersettingsOfOneMonth" parameterType="map" resultType="cn.itcast.pojo.OrderSetting">
+        SELECT * FROM t_ordersetting WHERE orderDate BETWEEN #{beginDate} AND #{endDate}
+    </select>
+
+    <insert id="add" parameterType="cn.itcast.pojo.OrderSetting">
+        INSERT INTO t_ordersetting (orderDate,number,reservations) VALUES (#{orderDate},#{number},#{reservations})
+    </insert>
+
+    <update id="updateOrdersetting" parameterType="cn.itcast.pojo.OrderSetting">
+        UPDATE t_ordersetting SET number = #{number} WHERE orderDate = #{orderDate}
+    </update>
+
+    <!--根据日期，查询该天预约总数-->
+    <select id="getOrderSettingOfOrderDate" parameterType="String" resultType="cn.itcast.pojo.OrderSetting">
+        SELECT * FROM t_ordersetting WHERE orderDate = #{orderDate}
+    </select>
+
+    <!--更新预约数-->
+    <update id="updateReservationsOfOrderDate" parameterType="cn.itcast.pojo.OrderSetting">
+        UPDATE t_ordersetting SET reservations = #{reservations} WHERE orderDate = #{orderDate}
+    </update>
+
+
+</mapper>

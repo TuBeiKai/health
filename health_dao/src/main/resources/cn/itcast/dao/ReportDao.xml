@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.ReportDao">
+
+    <!--根据用户id查询角色-->
+    <select id="findMemberCountByMonth" parameterType="String" resultType="Integer">
+       SELECT count(*) FROM t_member WHERE regTime &lt;= #{value}
+    </select>
+
+    <!--关联t_setmeal和t_order表，查询套餐名称及预约数量-->
+    <select id="getSetmealReport" resultType="map">
+        SELECT COUNT(*) value,ts.name name FROM t_order tor, t_setmeal ts WHERE tor.setmeal_id = ts.id group by tor.setmeal_id;
+    </select>
+
+    <!--查询预约排名前number的套餐信息-->
+    <select id="findfirstNSetmeals" parameterType="Integer" resultType="Map">
+        SELECT
+	COUNT(*) setmeal_count,
+	ts.name name,
+	count(*) / (SELECT COUNT(*) FROM t_order) proportion
+FROM
+	t_order tor,
+	t_setmeal ts
+WHERE
+	tor.setmeal_id = ts.id
+GROUP BY
+	tor.setmeal_id
+LIMIT 0,#{value}
+    </select>
+</mapper>

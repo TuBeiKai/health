@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.MemberDao">
+
+    <!--根据电话号码查找会员-->
+    <select id="countMemberByPhoneNumber" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_member WHERE phoneNumber=#{phoneNumber}
+    </select>
+
+    <!--根据电话号码查询会员信息-->
+    <select id="findMemberByPhoneNumber" parameterType="String" resultType="cn.itcast.pojo.Member">
+        SELECT * FROM t_member WHERE phoneNumber=#{phoneNumber}
+    </select>
+
+    <!--插入会员信息-->
+    <insert id="insertMember" parameterType="cn.itcast.pojo.Member">
+        <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO t_member(fileNumber,name,sex,idCard,phoneNumber,regTime,password,email,birthday,remark)
+        VALUES
+        (#{fileNumber},#{name},#{sex},#{idCard},#{phoneNumber},#{regTime},#{password},#{email},#{birthday},#{remark})
+    </insert>
+
+    <!--根据日期注册会员数量-->
+    <select id="countTodayMembers" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_member WHERE regTime = #{regTime}
+    </select>
+
+    <!--查询会员总数-->
+    <select id="countTotalMember" resultType="Integer">
+        SELECT count(*) FROM t_member
+    </select>
+
+    <!--查询某天（包含）之后注册的用户总数-->
+    <select id="countNewMemberAfterDate" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_member WHERE regTime &gt;= #{value}
+    </select>
+
+</mapper>
