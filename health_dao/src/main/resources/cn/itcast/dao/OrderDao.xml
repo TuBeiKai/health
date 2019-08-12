@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.dao.OrderDao">
+
+    <!--插入预约信息-->
+    <insert id="insertOrder" parameterType="cn.itcast.pojo.Order">
+<selectKey keyColumn="member_Id" keyProperty="id" resultType="Integer" order="AFTER">
+    SELECT LAST_INSERT_ID()
+</selectKey>
+        INSERT INTO t_order (member_Id,orderDate,orderType,orderStatus,setmeal_Id)
+        VALUES (#{memberId},#{orderDate},#{orderType},#{orderStatus},#{setmealId})
+    </insert>
+
+    <!--根据order查询存在个数-->
+    <select id="countOrder" parameterType="cn.itcast.pojo.Order" resultType="Integer">
+        SELECT count(*) FROM t_order WHERE member_Id=#{memberId} AND orderDate=#{orderDate} AND setmeal_Id=#{setmealId}
+    </select>
+
+    <!--根据id查询预约信息-->
+    <select id="findMemberById" parameterType="Integer" resultType="map">
+        SELECT tm.name member, ts.name setmeal,t.orderDate orderDate, t.orderType orderType FROM t_order t, t_setmeal ts, t_member tm WHERE t.member_id=tm.id and t.setmeal_id = ts.id AND  t.id= #{id}
+    </select>
+
+    <!--根据日期查询预约数-->
+    <select id="countDayOrderNumber" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_order WHERE orderDate = #{value}
+    </select>
+
+    <!--根据日期查询到诊数-->
+    <select id="countDayVisitNumber" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_order WHERE orderDate = #{value} AND orderStatus = "已到诊";
+    </select>
+
+    <!--查询指定日期后的预约数-->
+    <select id="countOrderNumberAfterDay" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_order WHERE orderDate &gt;= #{value}
+    </select>
+
+    <!--查询指定日期后的到诊数-->
+    <select id="countVisitNumberAfterDay" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM t_order WHERE orderDate &gt;= #{value} AND orderStatus = "已到诊";
+    </select>
+
+</mapper>
